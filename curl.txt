@@ -1,0 +1,3 @@
+curl -X POST https://rbx4emwlpa.execute-api.eu-west-1.amazonaws.com/prod/newsitem \
+-H "Content-Type: application/json" \
+-d '{"title": "New Title", "date": "2022-01-01", "description": "News description."}'

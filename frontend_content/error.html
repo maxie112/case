@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News Submission</title>
+</head>
+<body>
+    <h1>Submit a News Item</h1>
+    <form id="submit-form">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title"><br>
+        <label for="date">Date:</label><br>
+        <input type="text" id="date" name="date"><br>
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description"></textarea><br>
+        <input type="button" value="Submit" onclick="submitData()">
+    </form>
+
+    <h2>News Items</h2>
+    <ul id="news-items">
+        <!-- News items will be listed here -->
+    </ul>
+
+    <script>
+        async function submitData() {
+            const title = document.getElementById('title').value;
+            const date = document.getElementById('date').value;
+            const description = document.getElementById('description').value;
+
+            const response = await fetch('https://rbx4emwlpa.execute-api.eu-west-1.amazonaws.com/prod/newsitem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, date, description }),
+            });
+
+            if (response.ok) {
+                console.log('Data submitted successfully');
+                fetchNews(); // Refresh the news items list
+            } else {
+                console.error('Submission failed');
+            }
+        }
+
+        async function fetchNews() {
+            const response = await fetch('https://rbx4emwlpa.execute-api.eu-west-1.amazonaws.com/prod/news');
+            const data = await response.json();
+            const newsList = document.getElementById('news-items');
+            newsList.innerHTML = ''; // Clear existing items
+            data.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${item.date} - ${item.title}: ${item.description}`;
+                newsList.appendChild(listItem);
+            });
+        }
+
+        // Initial fetch of news items
+        fetchNews();
+    </script>
+</body>
+</html>
